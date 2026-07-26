@@ -365,6 +365,17 @@ If you want to work on the codebase you can clone the repository and work in "ed
 
 # Changelog
 
+### 0.7.6 (2026-07-26)
+* Added physical units (`°C`, `V`, `µA`, `rpm`, `%`, `min`, `h`, `m³`, `kWh`) to ~50 existing DID field definitions
+* **DID 912 `DaylightSavingTimeActive`**: restructured from opaque `RawCodec` to typed `O3EComplexType` with 5 named byte fields; access changed ro → rw
+* **DIDs 933–940 `MixerOne–EightCircuitProperty`**: new structured `O3EComplexType` definitions with 8 sub-fields each (temperatures, setpoints, flow rates)
+* **DIDs 1850–1856 `ApartmentOneTimeSchedule{Mon–Sun}`**: structured with `O3EList` (start/stop time pairs with setpoints)
+* **DIDs 1944–2083 `Room{One–Twenty}TimeSchedule{Mon–Sun}`** (140 DIDs): structured with `O3EList` using new `RoomSetpoints` enum
+* **New enum `RoomSetpoints`**: `{2: "Reduced", 3: "Normal", 4: "Comfort"}` for room heating time schedules
+* **DIDs 1139, 2426–2429**: access corrected ro → rw
+* **DID 2830 `EmergencyMode`**: `RawCodec` → `O3EByteVal` (proper boolean)
+* **New device-length variants**: DID 504 at 10 bytes (`DomesticHotWaterSetpointMetaData`), DID 874 at 2 bytes (`LegionellaProtectionTargetTemperatureSetpoint`)
+
 ### 0.7.5 (2026-07-05)
 * **New codec `O3ESwitch`**: decodes a device/variant-dependent payload selected by a discriminator byte (e.g. ZigBee device type), with per-case sub-structure and a fallback `default` case — see discussion #369
 * **ZigBee DIDs 2086–2319 corrected**: byte ranges that are interpreted differently depending on the paired device (Climate sensor, TRV, Floor thermostat/Verteiler, Actuator NC/NO) are now decoded via `O3ESwitch` instead of a single fixed layout, fixing wrong/misleading values for non-Climate-sensor devices
